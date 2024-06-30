@@ -1,5 +1,5 @@
 import express, { Request, Response, json } from "express";
-import { alter, create, deleta, findAll, findById } from "./usuario/usuario.service";
+import { create, deleta, findAll, findById, update, updateAdmin } from "./usuario/usuario.service";
 
 export const router = express.Router();
 
@@ -21,6 +21,14 @@ router.route('/usuario/:id').delete(async (req: Request, res: Response) => {
     res.send(await deleta(+req.params.id));
 })
 
+router.route('/usuario').patch(async (req: Request, res: Response) => {
+    res.send(await update(req.body));
+})
+
 router.route('/usuario/:id').patch(async (req: Request, res: Response) => {
-    res.send(await alter(+req.params.id, req.body));
+    res.send(await update(req.body));
+})
+
+router.route('/usuario/:id').put(async (req: Request, res: Response) => {
+    res.send(await updateAdmin(+req.params.id, req.body.admin));
 })

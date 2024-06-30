@@ -50,10 +50,14 @@ export async function deleta(id: number) {
 
     await client.end();
 
-    return "Deletou!"
+    return res.rowCount > 0 ? 'Usuário excluído com sucesso!' : 'Usuário não encontrado!';
 }
 
-export async function alter(id: number, usuario: Usuario) {
+export async function update(usuario: Usuario) {
+
+    if (!usuario.id) {
+        return 'Usuário não encontrado! Informe o id do usuário que deseja alterar!'
+    }
 
     const client = new Client();
     await client.connect();
@@ -63,11 +67,27 @@ export async function alter(id: number, usuario: Usuario) {
                 `email = $2, ` +
                 `password = $3, ` + 
                 `admin = $4 ` +
-                `WHERE id = $5`;
+                `WHERE id = $5 RETURNING *;`;
 
-    const res = await client.query(sql, [usuario.nome, usuario.email, usuario.password, usuario.admin, id]);
+    const res = await client.query(sql, [usuario.nome, usuario.email, usuario.password, usuario.admin, usuario.id]);
 
     await client.end();
 
-    return "Alterou!"
+    return res.rows[0];
+}
+
+export async function updateAdmin(id: number, admin: boolean) {
+
+    if (!id) {
+        return 'Usuário não encontrado! Informe o id do usuário que deseja alterar!'
+    }
+
+    const client = new Client();
+    await client.connect();
+
+    const res = await client.query(`UPDATE usuario SET admin = $1 WHERE id = $2 RETURNING id;`, [admin, id]);
+
+    await client.end();
+
+    return res.rows[0];
 }
