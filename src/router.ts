@@ -25,10 +25,6 @@ router.route('/usuario').patch(async (req: Request, res: Response) => {
     res.send(await update(req.body));
 })
 
-router.route('/usuario/:id').patch(async (req: Request, res: Response) => {
-    res.send(await update(req.body));
-})
-
 router.route('/usuario/:id').put(async (req: Request, res: Response) => {
     res.send(await updateAdmin(+req.params.id, req.body.admin));
 })
